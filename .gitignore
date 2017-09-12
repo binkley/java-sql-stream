@@ -1,0 +1,5 @@
+/.gradle/
+/.idea/
+/build/
+/java-sql-stream.iml
+/out/
