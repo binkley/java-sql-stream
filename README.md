@@ -55,8 +55,39 @@ public long countThem(final SomethingStreamable<SomeThing> things) {
 }
 ```
 
+## Transactions
+
+Another awkward JDBC API is the one for transactions.  A typical pattern 
+is along the lines (there are variations):
+
+```java
+connection.setAutoCommit(false);
+try {
+    doWork(); // throws SQLException
+    connection.commit();
+} catch (final SQLException e) {
+    connection.rollback();
+    throw e;
+} finally {
+    connection.setAutoCommit(true);
+}
+```
+
+So using a transaction within a stream method is verbose, generally needing 
+a wrapper method for readability.
+
+### Solution
+
+Rather, again use a wrapper function rather than hand-roll:
+
+```java
+someStream.
+        forEach(acceptUnchecked(acceptTransacted(this::doWork)));
+```
+
 ## This library
 
 * Predicates - use [`UncheckedSQLPredicate.testUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLPredicate.java)
 * Functions - use [`UncheckedSQLFunction.applyUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLFunction.java)
 * Consumers - use [`UncheckedSQLConsumer.acceptUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLConsumer.java)
+* Transactions - use "Transacted" variants
