@@ -42,7 +42,7 @@ private SomeOtherThing readFromJdbc(final SomeThing oneThing) {
 Over time, as more of these low-value wrapper methods are needed, it raises 
 the overall whitenoise level of the code, and hides the real intent.
 
-## This library
+### Solution
 
 Rather, take a different approach: use a general wrapping function directly
 in the stream, and avoid writing hand-rolled wrappers:
@@ -54,3 +54,9 @@ public long countThem(final SomethingStreamable<SomeThing> things) {
             count();
 }
 ```
+
+## This library
+
+* Predicates - use [`UncheckedSQLPredicate.testUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLPredicate.java)
+* Functions - use [`UncheckedSQLFunction.applyUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLFunction.java)
+* Consumers - use [`UncheckedSQLConsumer.acceptUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLConsumer.java)
