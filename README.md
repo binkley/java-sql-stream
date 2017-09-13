@@ -32,7 +32,7 @@ public long countThem(final SomethingStreamable<SomeThing> things) {
 
 private SomeOtherThing readFromJdbc(final SomeThing oneThing) {
     try {
-        return oneThing.asSomeOtherThing();  // throws SQLException
+        return oneThing.asSomeOtherThing(); // throws SQLException
     } catch (final SQLException e) {
         throw new UncheckedSQLException(e);
     }
@@ -50,7 +50,7 @@ in the stream, and avoid writing hand-rolled wrappers:
 ```java
 public long countThem(final SomethingStreamable<SomeThing> things) {
     return things.stream().
-            map(applyUnchecked(SomeThing::asSomeOtherThing)) // static import
+            map(applyUnchecked(SomeThing::asSomeOtherThing))
             count();
 }
 ```
@@ -87,7 +87,9 @@ someStream.
 
 ## This library
 
-* Predicates - use [`UncheckedSQLPredicate.testUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLPredicate.java)
-* Functions - use [`UncheckedSQLFunction.applyUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLFunction.java)
-* Consumers - use [`UncheckedSQLConsumer.acceptUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLConsumer.java)
-* Transactions - use "Transacted" variants
+* Unchecked predicates - use [`UncheckedSQLPredicate.testUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLPredicate.java)
+* Unchecked functions - use [`UncheckedSQLFunction.applyUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLFunction.java)
+* Unchecked consumers - use [`UncheckedSQLConsumer.acceptUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLConsumer.java)
+* Transacted predicates - use [`TransactedSQLPredicate.testTransacted(connection, wrapped)`](src/main/java/hm/binkley/sql/TransactedSQLPredicate.java)
+* Transacted functions - use [`TransactedSQLFunction.applyTransacted(connection, wrapped)`](src/main/java/hm/binkley/sql/TransactedSQLFunction.java)
+* Transacted consumers - use [`TransactedSQLConsumer.acceptTransacted(connection, wrapped)`](src/main/java/hm/binkley/sql/TransactedSQLConsumer.java)
