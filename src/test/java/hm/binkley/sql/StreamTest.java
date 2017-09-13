@@ -6,10 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
-import static hm.binkley.sql.TransactedConsumer.acceptTransacted;
-import static hm.binkley.sql.TransactedFunction.applyTransacted;
-import static hm.binkley.sql.UncheckedSQLConsumer.acceptUnchecked;
-import static hm.binkley.sql.UncheckedSQLFunction.applyUnchecked;
+import static hm.binkley.sql.WithConnection.with;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -21,10 +18,39 @@ public final class StreamTest {
     private final Connection connection = mock(Connection.class);
 
     @Test
+    public void shouldSucceedWithPredicate()
+            throws SQLException {
+        final Integer value = Stream.of(0).
+                filter(with(connection).testTransacted(in -> true)).
+                findFirst().
+                get();
+
+        assertThat(value, is(equalTo(0)));
+        verify(connection).commit();
+    }
+
+    @SuppressWarnings("WhitespaceAround")
+    @Test
+    public void shouldFailWithPredicate()
+            throws SQLException {
+        final SQLException cause = new SQLException();
+        try {
+            Stream.of(0).
+                    filter(with(connection).testTransacted(in -> {
+                        throw cause;
+                    })).
+                    forEach(in -> {});
+        } catch (final UncheckedSQLException e) {
+            assertThat(e.getCause(), is(sameInstance(cause)));
+            verify(connection).rollback();
+        }
+    }
+
+    @Test
     public void shouldSucceedWithFunction()
             throws SQLException {
         final Integer value = Stream.of("string").
-                map(applyUnchecked(applyTransacted(connection, in -> 0))).
+                map(with(connection).applyTransacted(in -> 0)).
                 findFirst().
                 get();
 
@@ -39,9 +65,9 @@ public final class StreamTest {
         final SQLException cause = new SQLException();
         try {
             Stream.of("string").
-                    map(applyUnchecked(applyTransacted(connection, in -> {
+                    map(with(connection).applyTransacted(in -> {
                         throw cause;
-                    }))).
+                    })).
                     forEach(in -> {});
         } catch (final UncheckedSQLException e) {
             assertThat(e.getCause(), is(sameInstance(cause)));
@@ -54,8 +80,7 @@ public final class StreamTest {
     public void shouldSucceedWithConsumer()
             throws SQLException {
         Stream.of(0).
-                forEach(acceptUnchecked(
-                        acceptTransacted(connection, in -> {})));
+                forEach(with(connection).acceptTransacted(in -> {}));
 
         verify(connection).commit();
     }
@@ -67,10 +92,9 @@ public final class StreamTest {
         final SQLException cause = new SQLException();
         try {
             Stream.of(0).
-                    forEach(acceptUnchecked(
-                            acceptTransacted(connection, in -> {
-                                throw cause;
-                            })));
+                    forEach(with(connection).acceptTransacted(in -> {
+                        throw cause;
+                    }));
         } catch (final UncheckedSQLException e) {
             assertThat(e.getCause(), is(sameInstance(cause)));
             verify(connection).rollback();

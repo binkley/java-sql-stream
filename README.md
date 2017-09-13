@@ -1,5 +1,8 @@
 # Java helpers for JDBC and Streams
 
+*tl;dr* &mdash; _Jump to [SteamTest](src/test/java/hm/binkley/sql/StreamTest.java)
+to see a full code example_
+
 Java 8 Streams are a great addition to the JDK, however they have some 
 restrictions which make them awkward to use at times.  In particular, the 
 streams methods do not support checked exceptions: only methods throwing 
