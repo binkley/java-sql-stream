@@ -98,11 +98,7 @@ produce a stream, but first one needs the iterator.
 ### Solution
 
 ```java
-for (final ResultSet row : iterable(results)) {
-    doWorkOn(row);
-}
-
-final long poorMansRowCount = stream(results).count();
+final long poorMansRowCount = ResultSetIterator.stream(results).count();
 ```
 
 ## This library
