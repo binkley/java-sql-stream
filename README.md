@@ -93,7 +93,8 @@ someStream.
 Unfortunately as JDBC predates both Java 5 for-each loops and Java 8 
 streams, looping through a result set has a unique API which is 
 incompatible with either.  `StreamSupport.stream()` can wrap an iterator to
-produce a stream, but first one needs the iterator.
+produce a stream, but first one needs the iterator (hence
+`ResultSetIterator` holds `stream()`).
 
 ### Solution
 
@@ -109,3 +110,6 @@ final long poorMansRowCount = ResultSetIterator.stream(results).count();
 * Transacted predicates - use [`TransactedSQLPredicate.testTransacted(connection, wrapped)`](src/main/java/hm/binkley/sql/TransactedSQLPredicate.java)
 * Transacted functions - use [`TransactedSQLFunction.applyTransacted(connection, wrapped)`](src/main/java/hm/binkley/sql/TransactedSQLFunction.java)
 * Transacted consumers - use [`TransactedSQLConsumer.acceptTransacted(connection, wrapped)`](src/main/java/hm/binkley/sql/TransactedSQLConsumer.java)
+* Reported predicates - use [`ReportedSQLPredicate.testReported(wrapped, failValue, errors)`](src/main/java/hm/binkley/sql/ReportedSQLPredicate.java)
+* Reported functions - use [`ReportedSQLFunction.applyReported(wrapped, errors)`](src/main/java/hm/binkley/sql/ReportedSQLFunction.java)
+* Reported consumers - use [`ReportedSQLConsumer.acceptReported(wrapped, errors)`](src/main/java/hm/binkley/sql/ReportedSQLConsumer.java)
