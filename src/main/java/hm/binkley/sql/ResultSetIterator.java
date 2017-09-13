@@ -39,12 +39,12 @@ public final class ResultSetIterator
     @Override
     public ResultSet next() {
         try {
-            if (results.isBeforeFirst() || results.isAfterLast() || !more) {
-                throw new NoSuchElementException();
+            if (more) {
+                return results;
             }
-            return results;
-        } catch (final SQLException e) {
-            throw new UncheckedSQLException(e);
+            throw new NoSuchElementException();
+        } finally {
+            more = false;
         }
     }
 }

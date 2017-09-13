@@ -59,38 +59,8 @@ public final class ResultSetIteratorTest {
         }
     }
 
-    @Test
-    public void shouldThrowOnNext()
-            throws SQLException {
-        final SQLException cause = new SQLException();
-        when(results.isBeforeFirst()).thenThrow(cause);
-
-        try {
-            iter.next();
-            fail();
-        } catch (final UncheckedSQLException e) {
-            assertThat(e.getCause(), is(sameInstance(cause)));
-        }
-    }
-
     @Test(expected = NoSuchElementException.class)
     public void shouldComplainIfNextWithoutHasNext() {
-        iter.next();
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void shouldComplainIfNotBegun()
-            throws SQLException {
-        when(results.isBeforeFirst()).thenReturn(true);
-
-        iter.next();
-    }
-
-    @Test(expected = NoSuchElementException.class)
-    public void shouldComplainIfExhausted()
-            throws SQLException {
-        when(results.isAfterLast()).thenReturn(true);
-
         iter.next();
     }
 }
