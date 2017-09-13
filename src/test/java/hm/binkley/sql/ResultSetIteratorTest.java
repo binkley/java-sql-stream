@@ -5,9 +5,11 @@ import org.junit.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static hm.binkley.sql.ResultSetIterator.iterable;
 import static hm.binkley.sql.ResultSetIterator.stream;
 import static hm.binkley.sql.UncheckedSQLFunction.applyUnchecked;
 import static java.util.Collections.singletonList;
@@ -28,6 +30,22 @@ public final class ResultSetIteratorTest {
     @After
     public void tearDown() {
         reset(results);
+    }
+
+    @Test
+    public void shouldIterate()
+            throws SQLException {
+        when(results.next()).thenReturn(true, false);
+        when(results.getString("value")).
+                thenReturn("a").
+                thenThrow(AssertionError.class);
+
+        final List<String> values = new ArrayList<>();
+        for (final ResultSet row : iterable(results)) {
+            values.add(row.getString("value"));
+        }
+
+        assertThat(values, is(equalTo(singletonList("a"))));
     }
 
     @Test

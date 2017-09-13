@@ -88,6 +88,23 @@ someStream.
         forEach(acceptUnchecked(acceptTransacted(this::doWork)));
 ```
 
+## Result sets
+
+Unfortunately as JDBC predates both Java 5 for-each loops and Java 8 
+streams, looping through a result set has a unique API which is 
+incompatible with either.  `StreamSupport.stream()` can wrap an iterator to
+produce a stream, but first one needs the iterator.
+
+### Solution
+
+```java
+for (final ResultSet row : iterable(results)) {
+    doWorkOn(row);
+}
+
+final long poorMansRowCount = stream(results).count();
+```
+
 ## This library
 
 * Unchecked predicates - use [`UncheckedSQLPredicate.testUnchecked(wrapped)`](src/main/java/hm/binkley/sql/UncheckedSQLPredicate.java)

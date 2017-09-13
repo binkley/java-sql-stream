@@ -26,6 +26,10 @@ public final class ResultSetIterator
                         IMMUTABLE | NONNULL | ORDERED), false);
     }
 
+    public static Iterable<ResultSet> iterable(final ResultSet results) {
+        return () -> new ResultSetIterator(results);
+    }
+
     @Override
     public boolean hasNext() {
         try {
