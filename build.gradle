@@ -22,11 +22,13 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.1.0'
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(AbstractCompile) {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-    options.compilerArgs += ['-Werror', '-Xlint:all', '-Xlint:-processing']
-    options.encoding = 'UTF-8'
+    options.with {
+        compilerArgs += ['-Werror', '-Xlint:all', '-Xlint:-processing']
+        encoding = 'UTF-8'
+    }
 }
 
 tasks.withType(Test) {
