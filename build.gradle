@@ -23,8 +23,8 @@ dependencies {
 }
 
 tasks.withType(AbstractCompile) {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
     options.with {
         compilerArgs += ['-Werror', '-Xlint:all', '-Xlint:-processing']
         encoding = 'UTF-8'
