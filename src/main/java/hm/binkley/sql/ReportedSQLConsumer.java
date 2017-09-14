@@ -10,14 +10,14 @@ import java.util.function.Consumer;
 public final class ReportedSQLConsumer<T>
         implements Consumer<T> {
     private final SQLConsumer<T> wrapped;
-    private final BiConsumer<T, SQLException> errors;
+    private final BiConsumer<T, SQLException> reported;
 
     @Override
     public void accept(final T t) {
         try {
             wrapped.accept(t);
         } catch (final SQLException e) {
-            errors.accept(t, e);
+            reported.accept(t, e);
         }
     }
 }

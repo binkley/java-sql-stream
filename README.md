@@ -88,6 +88,22 @@ someStream.
         forEach(acceptUnchecked(acceptTransacted(this::doWork)));
 ```
 
+## Reporting
+
+Sometimes you want to report a `SQLException`, rather than have it bubble up
+the call stack, and treat those stream elements which failed as "handled".
+
+### Solution
+
+Again, use a wrapper function rather than hand-roll.  These are composable:
+
+```java
+final Map<String, SQLException> reported = new HashMap<>();
+Stream.of("a", "b", "c").
+        filter(testReported(StreamTest::throwOnB, false, reported::put)).
+        count();
+```
+
 ## Result sets
 
 Unfortunately as JDBC predates both Java 5 for-each loops and Java 8 

@@ -17,21 +17,21 @@ public final class ReportedSQLConsumerTest {
     @SuppressWarnings("WhitespaceAround")
     @Test
     public void shouldSucceed() {
-        final Map<Integer, SQLException> errors = new HashMap<>();
+        final Map<Integer, SQLException> reported = new HashMap<>();
 
-        acceptReported(in -> {}, errors::put).accept(0);
+        acceptReported(in -> {}, reported::put).accept(0);
 
-        assertThat(errors, is(anEmptyMap()));
+        assertThat(reported, is(anEmptyMap()));
     }
 
     @Test
     public void shouldFail() {
         final SQLException cause = new SQLException();
-        final Map<Integer, SQLException> errors = new HashMap<>();
+        final Map<Integer, SQLException> reported = new HashMap<>();
         acceptReported(in -> {
             throw cause;
-        }, errors::put).accept(0);
+        }, reported::put).accept(0);
 
-        assertThat(errors, is(equalTo(singletonMap(0, cause))));
+        assertThat(reported, is(equalTo(singletonMap(0, cause))));
     }
 }

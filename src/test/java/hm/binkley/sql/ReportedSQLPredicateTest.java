@@ -18,26 +18,26 @@ import static org.junit.Assert.assertTrue;
 public final class ReportedSQLPredicateTest {
     @Test
     public void shouldSucceed() {
-        final Map<Integer, SQLException> errors = new HashMap<>();
+        final Map<Integer, SQLException> reported = new HashMap<>();
 
-        final boolean value = testReported(in -> true, false, errors::put).
+        final boolean value = testReported(in -> true, false, reported::put).
                 test(0);
 
         assertTrue(value);
-        assertThat(errors, is(anEmptyMap()));
+        assertThat(reported, is(anEmptyMap()));
     }
 
     @Test
     public void shouldFail() {
         final SQLException cause = new SQLException();
-        final Map<Integer, SQLException> errors = new HashMap<>();
+        final Map<Integer, SQLException> reported = new HashMap<>();
 
         final boolean value = testReported(in -> {
             throw cause;
-        }, false, errors::put).
+        }, false, reported::put).
                 test(0);
 
         assertFalse(value);
-        assertThat(errors, is(equalTo(singletonMap(0, cause))));
+        assertThat(reported, is(equalTo(singletonMap(0, cause))));
     }
 }

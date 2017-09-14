@@ -4,9 +4,13 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
+import static hm.binkley.sql.ReportedSQLPredicate.testReported;
 import static hm.binkley.sql.WithConnection.with;
+import static org.hamcrest.Matchers.aMapWithSize;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
@@ -98,6 +102,28 @@ public final class StreamTest {
         } catch (final UncheckedSQLException e) {
             assertThat(e.getCause(), is(sameInstance(cause)));
             verify(connection).rollback();
+        }
+    }
+
+    @Test
+    public void shouldReport() {
+        final Map<String, SQLException> reported = new HashMap<>();
+        final long count = Stream.of("a", "b", "c").
+                filter(testReported(StreamTest::throwOnB, false,
+                        reported::put)).
+                count();
+
+        assertThat(count, is(equalTo(2L)));
+        assertThat(reported, is(aMapWithSize(1)));
+    }
+
+    private static boolean throwOnB(final String in)
+            throws SQLException {
+        switch (in) {
+        case "b":
+            throw new SQLException();
+        default:
+            return true;
         }
     }
 }

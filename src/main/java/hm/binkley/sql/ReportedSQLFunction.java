@@ -11,14 +11,14 @@ import java.util.function.Function;
 public final class ReportedSQLFunction<T, R>
         implements Function<T, Optional<R>> {
     private final SQLFunction<T, R> wrapped;
-    private final BiConsumer<T, SQLException> errors;
+    private final BiConsumer<T, SQLException> reported;
 
     @Override
     public Optional<R> apply(final T t) {
         try {
             return Optional.of(wrapped.apply(t));
         } catch (final SQLException e) {
-            errors.accept(t, e);
+            reported.accept(t, e);
             return Optional.empty();
         }
     }
