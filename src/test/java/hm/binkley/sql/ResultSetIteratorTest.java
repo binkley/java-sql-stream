@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 import static hm.binkley.sql.ResultSetIterator.iterable;
 import static hm.binkley.sql.ResultSetIterator.stream;
-import static hm.binkley.sql.UncheckedSQLFunction.applyUnchecked;
+import static hm.binkley.sql.UncheckedSQLFunction.getString;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 import static org.hamcrest.Matchers.equalTo;
@@ -57,7 +57,7 @@ public final class ResultSetIteratorTest {
                 thenThrow(AssertionError.class);
 
         final List<String> values = stream(results).
-                map(applyUnchecked(row -> row.getString("value"))).
+                map(getString("value")).
                 collect(toList());
 
         assertThat(values, is(equalTo(singletonList("a"))));

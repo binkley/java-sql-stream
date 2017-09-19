@@ -2,6 +2,7 @@ package hm.binkley.sql;
 
 import lombok.RequiredArgsConstructor;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.function.Function;
 
@@ -17,5 +18,10 @@ public final class UncheckedSQLFunction<T, R>
         } catch (final SQLException e) {
             throw new UncheckedSQLException(e);
         }
+    }
+
+    public static UncheckedSQLFunction<ResultSet, String> getString(
+            final String label) {
+        return applyUnchecked(results -> results.getString(label));
     }
 }
