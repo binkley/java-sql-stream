@@ -50,6 +50,21 @@ public final class ResultSetIteratorTest {
     }
 
     @Test
+    public void shouldStream()
+            throws SQLException {
+        when(results.next()).thenReturn(true, false);
+        when(results.getString("value")).
+                thenReturn("a").
+                thenThrow(AssertionError.class);
+
+        final List<String> values = stream(results).
+                map(getString("value")).
+                collect(toList());
+
+        assertThat(values, is(equalTo(singletonList("a"))));
+    }
+
+    @Test
     public void shouldSucceed()
             throws SQLException {
         when(results.next()).thenReturn(true, false);
