@@ -14,7 +14,7 @@ import static java.util.Spliterator.NONNULL;
 import static java.util.Spliterator.ORDERED;
 import static java.util.Spliterators.spliteratorUnknownSize;
 
-@RequiredArgsConstructor
+@RequiredArgsConstructor(staticName = "over")
 public final class ResultSetIterator
         implements Iterator<ResultSet> {
     private final ResultSet results;
@@ -22,12 +22,12 @@ public final class ResultSetIterator
 
     public static Stream<ResultSet> stream(final ResultSet results) {
         return StreamSupport.
-                stream(spliteratorUnknownSize(new ResultSetIterator(results),
+                stream(spliteratorUnknownSize(over(results),
                         IMMUTABLE | NONNULL | ORDERED), false);
     }
 
     public static Iterable<ResultSet> iterable(final ResultSet results) {
-        return () -> new ResultSetIterator(results);
+        return () -> over(results);
     }
 
     @Override

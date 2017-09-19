@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static hm.binkley.sql.ResultSetIterator.iterable;
+import static hm.binkley.sql.ResultSetIterator.over;
 import static hm.binkley.sql.ResultSetIterator.stream;
 import static hm.binkley.sql.UncheckedSQLFunction.getString;
 import static java.util.Collections.singletonList;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.when;
 
 public final class ResultSetIteratorTest {
     private final ResultSet results = mock(ResultSet.class);
-    private final ResultSetIterator iter = new ResultSetIterator(results);
+    private final ResultSetIterator iter = over(results);
 
     @After
     public void tearDown() {
